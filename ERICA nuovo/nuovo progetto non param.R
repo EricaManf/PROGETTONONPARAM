@@ -63,6 +63,7 @@ fit3$coefficients
 
 fit4 = glm( New  ~ Age + nWBV + ASF, data = casestudy,family=binomial )
 summary ( fit4 )
+predict.glm(fit4,newdata=C2,type="response")
 fit4$coefficients
 
 fit5 = glm( New  ~ Age + nWBV + ASF + SES, data = casestudy,family=binomial )
@@ -89,6 +90,10 @@ fit8$coefficients
 predict.glm(fit8,newdata=C2,type="response")
 #modello sembra buono ma non mi convince la prediction
 
+fit9 = glm( New  ~ Age + nWBV  + SES, data = casestudy,family=binomial )
+summary ( fit9 )
+
+predict.glm(fit9,newdata=C2,type="response")
 
 library(rgl)
 library(ISLR2)
