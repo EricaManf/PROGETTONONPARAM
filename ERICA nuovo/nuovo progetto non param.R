@@ -45,7 +45,7 @@ New[i1]=1
 New[-i1]=0
 n=cbind(casestudy,New)
 head(n)
-fit = glm( New  ~ Age + EDUC  + eTIV + nWBV + CDR+ ASF, data = casestudy,family=binomial )
+fit = glm( New  ~ Age + EDUC  + eTIV + nWBV + CDR+ ASF, data = n,family=binomial )
 summary ( fit )
 fit$coefficients
 
@@ -66,6 +66,8 @@ summary ( fit4 )
 predict.glm(fit4,newdata=C2,type="response")
 fit4$coefficients
 
+###forse il 4 è il modello migliore
+
 fit5 = glm( New  ~ Age + nWBV + ASF + SES, data = casestudy,family=binomial )
 summary ( fit5 )
 fit5$coefficients
@@ -73,10 +75,10 @@ fit5$coefficients
 predict.glm(fit5,newdata=C2,type="response")
 #modello sembra ok ma non mi convince la prediction
 
-fit6 = glm( New  ~ Age + nWBV + ASF + MMSE, data = casestudy,family=binomial )
+fit6 = glm( New  ~ Age + nWBV  + MMSE, data = n,family=binomial )
 summary ( fit6 )
 fit6$coefficients
-#questo dà problemi
+predict.glm(fit6,newdata=C2,type="response")
 
 fit7 = glm( New  ~ Age + nWBV + ASF + MMSE , data = casestudy,family=binomial )
 summary ( fit7 )
@@ -109,7 +111,7 @@ m_loc = npreg(Group  ~ Age + EDUC + SES + MMSE  + eTIV + nWBV + CDR+ ASF,
 typeof(ND2)
 typeof(alz2)
 
-
+#####svarioni a caso
 
 income_newdata=data.frame(income=with(Prestige, seq(range(income)[1],range(income)[2],by=0.5)))
 preds=predict(m_loc,newdata=income_newdata,se=T)
@@ -135,3 +137,56 @@ matlines(income_newdata$income,se.bands ,lwd =1, col =" blue",lty =3)
 with(ND2, scatterplotMatrix(data.frame(Visit, MR.Delay, Age ,EDUC, SES, MMSE, CDR, eTIV,nWBV, ASF)))
 model_lm=lm(~ education + income, data=alz2)
 summary(model_lm)
+
+#####plot 
+library(ISLR2)
+library(car)
+library(mgcv)
+library(rgl)
+library(splines)
+library(pbapply)
+with(alz2, scatterplotMatrix(data.frame(Age, eTIV, ASF,nWBV,MMSE,SES)))
+
+pazienti=vector(mode="integer",length=373)
+pazienti[1]=1
+j=0
+for(k in 1:372){
+  if (alz2[k,1]==alz2[k+1,1]){
+     pazienti[k+1]=j
+     }
+  else
+    j=j+1
+  pazienti[k]=j+1
+}
+pazienti
+
+
+matplot(alz2$Subject.ID,alz2$MMSE,)
+
+
+
+
+########prova con test set 
+ 
+ cs<-n[-1,]
+ cs<-cs[-1,]
+ cs<-cs[-4,]
+ cs<-cs[-4,]
+ cs<-cs[-4,]
+ cs<-cs[-4,]
+ cs<-cs[-4,]
+ cs<-cs[-7,]
+ cs<-cs[-7,]
+ dt<-ND2[1:9,]
+
+ fit_t = glm( New  ~ Age + nWBV  + MMSE, data = cs,family=binomial )
+ summary ( fit_t )
+ fit_t$coefficients
+ predict.glm(fit_t,newdata=dt,type="response")
+ 
+ fit_t1 = glm( New  ~ Age + nWBV  + MMSE + ASF, data = cs,family=binomial )
+ summary ( fit_t1 )
+ fit_t1$coefficients
+ predict.glm(fit_t1,newdata=dt,type="response")
+ 
+ 
